@@ -89,7 +89,7 @@ export default function CartDrawer({
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
       setGeoStatus("error");
-      setGeoErrorMsg("Tu navegador o dispositivo no soporta geolocalización.");
+      setGeoErrorMsg("Tu navegador o teléfono no soporta geolocalización.");
       return;
     }
 
@@ -115,11 +115,11 @@ export default function CartDrawer({
       (error) => {
         setGeoStatus("error");
         if (error.code === error.PERMISSION_DENIED) {
-          setGeoErrorMsg("Permiso de GPS denegado. Puedes escribir tu dirección y referencia.");
+          setGeoErrorMsg("Permiso GPS denegado. Puedes escribir tu dirección y referencia.");
         } else if (error.code === error.POSITION_UNAVAILABLE) {
-          setGeoErrorMsg("Ubicación no disponible en este momento.");
+          setGeoErrorMsg("Ubicación GPS no disponible en este momento.");
         } else {
-          setGeoErrorMsg("Tiempo de espera agotado al obtener el GPS.");
+          setGeoErrorMsg("Tiempo de espera agotado al conectar con el GPS.");
         }
       },
       {
@@ -148,15 +148,15 @@ export default function CartDrawer({
       if (!deliveryData.apellido.trim()) errors.apellido = "Ingresa tu apellido";
       if (!deliveryData.telefono.trim()) errors.telefono = "Ingresa tu número de teléfono";
       else if (!/^\d{8,11}$/.test(deliveryData.telefono.replace(/\s+/g, ""))) {
-        errors.telefono = "Ingresa un número de teléfono válido (9 dígitos)";
+        errors.telefono = "Ingresa un teléfono válido de 9 dígitos";
       }
-      if (!deliveryData.direccion.trim()) errors.direccion = "Ingresa tu dirección exacta";
+      if (!deliveryData.direccion.trim()) errors.direccion = "Ingresa tu dirección de entrega";
     } else {
       if (!pickupData.nombre.trim()) errors.nombre = "Ingresa tu nombre";
       if (!pickupData.apellido.trim()) errors.apellido = "Ingresa tu apellido";
       if (!pickupData.telefono.trim()) errors.telefono = "Ingresa tu número de teléfono";
       else if (!/^\d{8,11}$/.test(pickupData.telefono.replace(/\s+/g, ""))) {
-        errors.telefono = "Ingresa un número de teléfono válido (9 dígitos)";
+        errors.telefono = "Ingresa un teléfono válido de 9 dígitos";
       }
     }
 
@@ -167,7 +167,6 @@ export default function CartDrawer({
   const handleSendOrder = () => {
     if (!validateCheckout()) return;
 
-    // Build WhatsApp message
     let message = "";
 
     const detailLines = cart
@@ -191,7 +190,7 @@ export default function CartDrawer({
 • *Teléfono:* ${deliveryData.telefono.trim()}
 • *Dirección:* ${deliveryData.direccion.trim()}
 • *Referencia:* ${deliveryData.referencia.trim() || "No especificada"}
-• *Ubicación GPS:* ${deliveryData.gpsUrl || "No proporcionada (ver dirección y referencia)"}
+• *Ubicación GPS:* ${deliveryData.gpsUrl || "No proporcionada (ver dirección/referencia)"}
 
 🍽️ *DETALLE DEL PEDIDO:*
 ${detailLines}
@@ -210,7 +209,7 @@ _Por favor confírmenme el tiempo estimado de entrega y los métodos de pago dis
 👤 *DATOS DE QUIEN RECOGE:*
 • *Nombre:* ${nombreCompleto}
 • *Teléfono:* ${pickupData.telefono.trim()}
-📍 *Local de recojo:* Cevichería "La Loma" - Av. Dos de Mayo con 26 de Diciembre (${STORE_MAPS_URL})
+📍 *Punto de recojo:* Cevichería "La Loma" - Av. Dos de Mayo con 26 de Diciembre (${STORE_MAPS_URL})
 
 🍽️ *DETALLE DEL PEDIDO:*
 ${detailLines}
@@ -243,7 +242,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
           initial={{ x: "100%" }}
           animate={{ x: 0 }}
           exit={{ x: "100%" }}
-          transition={{ type: "spring", damping: 26, stiffness: 280 }}
+          transition={{ type: "spring", damping: 28, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
           aria-label="Panel de pedido"
         >
@@ -278,7 +277,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                   }}
                   title="Vaciar carrito"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={15} />
                   <span>Vaciar</span>
                 </button>
               )}
@@ -297,7 +296,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
           {cart.length === 0 ? (
             <div className="cart-empty-state">
               <div className="empty-icon-wrap">
-                <ShoppingBag size={48} />
+                <ShoppingBag size={46} />
               </div>
               <h3>Tu pedido está vacío</h3>
               <p>Agrega los mejores ceviches, chicharrones y platos amazónicos para iniciar tu orden.</p>
@@ -308,12 +307,12 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
           ) : orderSentSuccess ? (
             <div className="order-success-screen">
               <div className="success-icon-wrap">
-                <CheckCircle2 size={54} />
+                <CheckCircle2 size={52} />
               </div>
               <h3>¡Pedido enviado a WhatsApp!</h3>
               <p>
-                Hemos abierto tu WhatsApp con el resumen de tu orden. Por favor dale a{" "}
-                <strong>"Enviar"</strong> en la app de WhatsApp para confirmar tu pedido directamente con La Loma.
+                Hemos abierto tu WhatsApp con el resumen completo de tu orden. Por favor dale al botón{" "}
+                <strong>"Enviar"</strong> en WhatsApp para confirmarlo de inmediato con La Loma.
               </p>
               <div className="success-recap-box">
                 <div className="recap-row">
@@ -321,11 +320,11 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                   <strong>{mode === "delivery" ? "🛵 Delivery a domicilio" : "🏪 Recojo en tienda"}</strong>
                 </div>
                 <div className="recap-row">
-                  <span>Productos:</span>
+                  <span>Platos ordenados:</span>
                   <strong>{cartCount} plato(s)</strong>
                 </div>
                 <div className="recap-row total">
-                  <span>Total:</span>
+                  <span>Total a pagar:</span>
                   <strong>S/ {total.toFixed(2)}</strong>
                 </div>
               </div>
@@ -487,9 +486,9 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
               </div>
             </div>
           ) : (
-            /* STEP 2: CHECKOUT (DELIVERY VS PICKUP) */
+            /* STEP 2: CHECKOUT (DELIVERY VS PICKUP) - RESPONSIVE OPTIMIZED */
             <div className="cart-step-container checkout-container">
-              {/* Delivery Tabs */}
+              {/* Delivery Tabs (Compact & Responsive) */}
               <div className="delivery-tabs-segmented" role="tablist">
                 <button
                   type="button"
@@ -502,7 +501,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                   }}
                 >
                   <Bike size={18} />
-                  <span>Delivery a domicilio</span>
+                  <span>Delivery</span>
                 </button>
                 <button
                   type="button"
@@ -515,7 +514,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                   }}
                 >
                   <Store size={18} />
-                  <span>Recoger en tienda</span>
+                  <span>Recojo en tienda</span>
                 </button>
               </div>
 
@@ -523,6 +522,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
               <div className="checkout-fields-scroll">
                 {mode === "delivery" ? (
                   <div className="form-group-wrap">
+                    {/* Names Grid */}
                     <div className="form-two-cols">
                       <div className="form-field">
                         <label htmlFor="del-nombre">
@@ -576,6 +576,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                       <input
                         id="del-telefono"
                         type="tel"
+                        inputMode="numeric"
                         placeholder="Ej: 961 261 750"
                         value={deliveryData.telefono}
                         onChange={(e) => {
@@ -634,7 +635,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                         <MapPin size={18} className="loc-pin-icon" />
                         <div>
                           <strong>Ubicación GPS precisa</strong>
-                          <p>Facilita que el motorizado llegue directo a tu puerta</p>
+                          <p>Para que el repartidor llegue directo a tu puerta</p>
                         </div>
                       </div>
 
@@ -646,17 +647,17 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                       >
                         {geoStatus === "loading" ? (
                           <>
-                            <Loader2 size={18} className="spin-icon" />
-                            <span>Detectando ubicación GPS...</span>
+                            <Loader2 size={17} className="spin-icon" />
+                            <span>Detectando GPS...</span>
                           </>
                         ) : geoStatus === "success" ? (
                           <>
-                            <CheckCircle2 size={18} />
-                            <span>Ubicación GPS compartida ✓ (Actualizar)</span>
+                            <CheckCircle2 size={17} />
+                            <span>Ubicación GPS lista ✓ (Actualizar)</span>
                           </>
                         ) : (
                           <>
-                            <MapPin size={18} />
+                            <MapPin size={17} />
                             <span>Compartir mi ubicación actual</span>
                           </>
                         )}
@@ -666,18 +667,18 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                       <div className="location-instruction-note">
                         <span className="note-bulb">💡</span>
                         <span>
-                          <strong>Nota importante:</strong> Haz clic en el botón de arriba para compartir tu
-                          ubicación en tiempo real. Se enviará un enlace exacto de Google Maps por WhatsApp para que
+                          <strong>Nota:</strong> Haz clic en el botón de arriba para compartir tu
+                          ubicación en tiempo real. Se enviará un enlace de Google Maps por WhatsApp para que
                           el repartidor tenga la mejor referencia y llegue rápidamente.
                         </span>
                       </div>
 
                       {geoStatus === "success" && deliveryData.gpsCoords && (
                         <div className="location-success-badge">
-                          <CheckCircle2 size={16} />
-                          <span>
-                            Coordenadas listas (Precisión: ±{deliveryData.gpsCoords.accuracy}m).
-                          </span>
+                          <div className="loc-badge-left">
+                            <CheckCircle2 size={15} />
+                            <span>GPS listo (±{deliveryData.gpsCoords.accuracy}m)</span>
+                          </div>
                           <a
                             href={deliveryData.gpsUrl}
                             target="_blank"
@@ -691,7 +692,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
 
                       {geoStatus === "error" && (
                         <div className="location-error-badge">
-                          <AlertCircle size={16} />
+                          <AlertCircle size={15} />
                           <span>{geoErrorMsg}</span>
                         </div>
                       )}
@@ -703,7 +704,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                     <div className="pickup-info-banner">
                       <Store size={22} className="pickup-store-icon" />
                       <div>
-                        <strong>Local Cevichería Restobar "La Loma"</strong>
+                        <strong>Local La Loma Restobar</strong>
                         <p>Av. Dos de Mayo con 26 de Diciembre, Puerto Maldonado</p>
                         <a
                           href={STORE_MAPS_URL}
@@ -711,7 +712,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                           rel="noreferrer"
                           className="pickup-map-link"
                         >
-                          Ver ubicación del local en Google Maps <ExternalLink size={13} />
+                          Ver en Google Maps <ExternalLink size={12} />
                         </a>
                       </div>
                     </div>
@@ -764,11 +765,12 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
 
                     <div className="form-field">
                       <label htmlFor="pick-telefono">
-                        <Phone size={14} /> Número de teléfono de contacto *
+                        <Phone size={14} /> Teléfono de contacto *
                       </label>
                       <input
                         id="pick-telefono"
                         type="tel"
+                        inputMode="numeric"
                         placeholder="Ej: 961 261 750"
                         value={pickupData.telefono}
                         onChange={(e) => {
@@ -814,7 +816,7 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                   className="btn-send-whatsapp-final"
                   onClick={handleSendOrder}
                 >
-                  <MessageSquare size={19} />
+                  <MessageSquare size={18} />
                   <span>Enviar pedido por WhatsApp</span>
                 </button>
               </div>

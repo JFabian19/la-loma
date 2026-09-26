@@ -17,8 +17,8 @@ const COMMON_TAGS = [
   "Sin culantro",
   "Pescado bien dorado",
   "Bajo en sal",
-  "Con bastante limón",
   "Poco arroz",
+  "Con bastante limón",
 ];
 
 const money = (value: string) => Number(value.replace(/[^0-9.]/g, ""));
@@ -66,10 +66,10 @@ export default function DishNoteModal({
       <div className="modal-backdrop" onClick={onClose}>
         <motion.div
           className="dish-note-modal"
-          initial={{ opacity: 0, scale: 0.93, y: 20 }}
+          initial={{ opacity: 0, scale: 0.94, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.93, y: 20 }}
-          transition={{ duration: 0.22, ease: "easeOut" }}
+          exit={{ opacity: 0, scale: 0.94, y: 15 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-modal="true"
@@ -82,6 +82,7 @@ export default function DishNoteModal({
                 <Sparkles size={13} /> Opcional
               </span>
               <button
+                type="button"
                 className="modal-close-btn"
                 onClick={onClose}
                 aria-label="Cerrar modal"
@@ -91,7 +92,7 @@ export default function DishNoteModal({
             </div>
             <h2 id="dish-modal-title">¿Tienes alguna nota para tu pedido?</h2>
             <p className="dish-modal-subtitle">
-              Puedes agregar indicaciones especiales para la preparación de tu plato o continuar directamente.
+              Agrega indicaciones para cocina (ej: ají aparte, sin picante) o continúa directamente.
             </p>
           </div>
 
@@ -104,28 +105,34 @@ export default function DishNoteModal({
             <div className="dish-preview-price">{dish.precio}</div>
           </div>
 
-          {/* Quantity selector */}
+          {/* Quantity selector (improved responsive layout) */}
           <div className="dish-modal-qty-row">
-            <span className="qty-label">Cantidad:</span>
-            <div className="modal-quantity-stepper">
-              <button
-                type="button"
-                onClick={() => setCantidad((c) => Math.max(1, c - 1))}
-                disabled={cantidad <= 1}
-                aria-label="Disminuir cantidad"
-              >
-                <Minus size={15} />
-              </button>
-              <span className="qty-count">{cantidad}</span>
-              <button
-                type="button"
-                onClick={() => setCantidad((c) => c + 1)}
-                aria-label="Aumentar cantidad"
-              >
-                <Plus size={15} />
-              </button>
+            <div className="qty-stepper-group">
+              <span className="qty-label">Cantidad:</span>
+              <div className="modal-quantity-stepper">
+                <button
+                  type="button"
+                  onClick={() => setCantidad((c) => Math.max(1, c - 1))}
+                  disabled={cantidad <= 1}
+                  aria-label="Disminuir cantidad"
+                >
+                  <Minus size={15} />
+                </button>
+                <span className="qty-count">{cantidad}</span>
+                <button
+                  type="button"
+                  onClick={() => setCantidad((c) => c + 1)}
+                  aria-label="Aumentar cantidad"
+                >
+                  <Plus size={15} />
+                </button>
+              </div>
             </div>
-            <span className="qty-subtotal">Subtotal: S/ {itemTotal}</span>
+
+            <div className="qty-subtotal-group">
+              <span className="subtotal-label">Subtotal:</span>
+              <strong className="subtotal-amount">S/ {itemTotal}</strong>
+            </div>
           </div>
 
           {/* Note Input */}
@@ -137,7 +144,7 @@ export default function DishNoteModal({
             <textarea
               id="dish-note-input"
               className="dish-note-textarea"
-              rows={3}
+              rows={2}
               placeholder="Ej: Ají aparte, sin picante, sin cebolla, pescado bien dorado..."
               value={nota}
               onChange={(e) => setNota(e.target.value)}
