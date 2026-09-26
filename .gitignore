@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+.github-checkout/
+.openai/
+.sites-checkout/
+.sites-runtime/
