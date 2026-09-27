@@ -2,6 +2,7 @@ export interface Dish {
   nombre: string;
   precio: string;
   descripcion?: string;
+  imagen: string;
 }
 
 export interface Category {

@@ -228,12 +228,13 @@ export default function App() {
               <div className="dish-grid">
                 {category.items.map((dish) => (
                   <article className="dish-card" key={`${category.id}-${dish.nombre}`}>
-                    <div
-                      className="dish-placeholder"
-                      aria-label={`Espacio reservado para imagen de ${dish.nombre}`}
-                    >
-                      <Waves size={24} />
-                      <span>{dish.nombre}</span>
+                    <div className="dish-photo">
+                      <img
+                        src={dish.imagen}
+                        alt={dish.nombre}
+                        loading="lazy"
+                        decoding="async"
+                      />
                     </div>
                     <div className="dish-info">
                       <div className="dish-title-row">

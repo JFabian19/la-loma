@@ -2,6 +2,7 @@ export interface Dish {
   nombre: string;
   precio: string;
   descripcion?: string;
+  imagen: string;
 }
 
 export interface Category {
@@ -11,10 +12,19 @@ export interface Category {
   items: Dish[];
 }
 
+const imageSlug = (nombre: string) =>
+  nombre
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
 const item = (nombre: string, precio: number, descripcion?: string): Dish => ({
   nombre,
   precio: `S/ ${precio.toFixed(2)}`,
   descripcion,
+  imagen: `/menu/${imageSlug(nombre)}.jpg`,
 });
 
 export const MENU: Category[] = [
@@ -41,7 +51,7 @@ export const MENU: Category[] = [
   {
     id: "pescados-causas", nombre: "Pescados fritos y causas", bajada: "Clásicos de la casa",
     items: [
-      item("Paco frito", 25), item("Doncella frita (medallones)", 35), item("Tilapia frita (filete)", 25),
+      item("Paco frito", 30), item("Doncella frita (medallones)", 35), item("Tilapia frita (filete)", 25),
       item("Filete de pescado a la plancha", 25), item("Causa de pescado", 20), item("Causa de langostinos", 25), item("Causa acevichada", 30),
     ],
   },
@@ -63,7 +73,7 @@ export const MENU: Category[] = [
     id: "sopas-sudados", nombre: "Sopas y sudados", bajada: "Caldos que reconfortan",
     items: [
       item("Chilcano", 15), item("Sopa salvaje", 20), item("Sopa criolla", 20), item("Chupe de langostinos", 35),
-      item("Chupe de camarón", 40), item("Chupe de choro", 25), item("Sudado de paco", 28), item("Sudado de tilapia", 25),
+      item("Chupe de camarón", 40), item("Chupe de choro", 25), item("Sudado de paco", 30), item("Sudado de tilapia", 25),
       item("Sudado mixto", 30), item("Parihuela", 40),
     ],
   },
