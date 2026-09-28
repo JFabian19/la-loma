@@ -1,16 +1,44 @@
-export interface Dish {
-  nombre: string;
-  precio: string;
-  descripcion?: string;
-  imagen: string;
-}
+import type { Category, Dish, DishOptionGroup, DishOptionItem } from "../types";
+export type { Category, Dish };
 
-export interface Category {
-  id: string;
-  nombre: string;
-  bajada: string;
-  items: Dish[];
-}
+export const TRIO_OPTIONS: DishOptionItem[] = [
+  {
+    id: "ceviche-clasico",
+    nombre: "Ceviche clásico",
+    descripcion: "Pescado fresco del día marinado en limón norteño, cebolla roja, camote glaseado y choclo tierno.",
+    imagen: "/menu/ceviche-clasico.webp",
+  },
+  {
+    id: "leche-de-tigre",
+    nombre: "Leche de tigre",
+    descripcion: "Concentrado marino al toque exacto de ají limo, con trozos de pescado fresco y canchita.",
+    imagen: "/menu/leche-de-tigre.webp",
+  },
+  {
+    id: "arroz-con-mariscos",
+    nombre: "Arroz con mariscos",
+    descripcion: "Arroz criollo a fuego vivo sazonado con mixtura marina selecta, ají amarillo y culantro.",
+    imagen: "/menu/arroz-con-mariscos.webp",
+  },
+  {
+    id: "chaufa-de-mariscos",
+    nombre: "Chaufa de mariscos",
+    descripcion: "Salteado oriental-peruano al wok con mariscos surtidos, cebollita china, huevo y toque ahumado.",
+    imagen: "/menu/chaufa-de-mariscos.webp",
+  },
+  {
+    id: "chicharron-de-pescado",
+    nombre: "Chicharrón de pescado",
+    descripcion: "Trozos de pescado marinados, crocantes y dorados por fuera, jugosos por dentro, con salsa tártara.",
+    imagen: "/menu/chicharron-de-pescado.webp",
+  },
+  {
+    id: "chicharron-de-pota",
+    nombre: "Chicharrón de pota",
+    descripcion: "Aros de pota crujientes y dorados al punto perfecto, acompañados de salsa tártara artesanal.",
+    imagen: "/menu/chicharron-de-pota.webp",
+  },
+];
 
 const imageSlug = (nombre: string) =>
   nombre
@@ -20,11 +48,18 @@ const imageSlug = (nombre: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-const item = (nombre: string, precio: number, descripcion?: string): Dish => ({
+const item = (
+  nombre: string,
+  precio: number,
+  descripcion?: string,
+  imagen?: string,
+  opcionesConfig?: DishOptionGroup
+): Dish => ({
   nombre,
   precio: `S/ ${precio.toFixed(2)}`,
   descripcion,
-  imagen: `/menu/${imageSlug(nombre)}.jpg`,
+  imagen: imagen || `/menu/${imageSlug(nombre)}.webp`,
+  opcionesConfig,
 });
 
 export const MENU: Category[] = [
@@ -67,7 +102,21 @@ export const MENU: Category[] = [
   },
   {
     id: "trios-marinos", nombre: "Tríos marinos", bajada: "Arma tu combinación favorita",
-    items: [item("Arma tu trío marino", 40, "Elige 3: ceviche, leche de tigre, arroz con mariscos, chaufa de mariscos o chicharrón de pescado y/o pota.")],
+    items: [
+      item(
+        "Arma tu trío marino",
+        40,
+        "¡Tu combinación marina soñada en porciones generosas! Elige 3 especialidades a tu gusto entre: Ceviche clásico fresco del día, Leche de tigre picantita y revitalizante, Arroz con mariscos criollo a fuego vivo, Chaufa de mariscos salteado al wok, Chicharrón de pescado crocante o Chicharrón de pota dorada. Servido con canchita serrana, chifles crocantes y cremas de la casa.",
+        undefined,
+        {
+          titulo: "Elige tus 3 especialidades",
+          subtitulo: "Selecciona 3 opciones para armar tu trío favorito",
+          min: 3,
+          max: 3,
+          opciones: TRIO_OPTIONS,
+        }
+      ),
+    ],
   },
   {
     id: "sopas-sudados", nombre: "Sopas y sudados", bajada: "Caldos que reconfortan",
@@ -97,7 +146,7 @@ export const MENU: Category[] = [
     items: [
       item("Jarra de refresco", 12), item("Vaso de refresco", 4), item("Cerveza Pilsen", 12), item("Cerveza de trigo", 13),
       item("Cerveza Corona", 10), item("Inca Kola o Coca-Cola 1/2 L", 5), item("Inca Kola o Coca-Cola 1 L", 10),
-      item("Inca Kola o Coca-Cola 2 L", 15), item("Agua mineral", 4), item("Infusiones", 4),
+      item("Inca Kola o Coca-Cola 2 L", 15), item("Agua mineral Cielo", 4), item("Infusiones", 4),
     ],
   },
 ];

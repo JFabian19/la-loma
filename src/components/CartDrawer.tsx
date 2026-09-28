@@ -172,6 +172,9 @@ export default function CartDrawer({
     const detailLines = cart
       .map((item) => {
         let line = `• ${item.cantidad} x ${item.dish.nombre} (${item.dish.precio})`;
+        if (item.opcionesSeleccionadas && item.opcionesSeleccionadas.length > 0) {
+          line += `\n  ↳ 🍤 Trío: ${item.opcionesSeleccionadas.join(" + ")}`;
+        }
         if (item.nota && item.nota.trim().length > 0) {
           line += `\n  ↳ 📝 Nota: ${item.nota.trim()}`;
         }
@@ -368,6 +371,21 @@ _Por favor confírmenme en cuánto tiempo estará listo para pasar a recogerlo. 
                         <div className="cart-item-info">
                           <h4 className="cart-item-title">{item.dish.nombre}</h4>
                           <span className="cart-item-unit-price">{item.dish.precio} c/u</span>
+
+                          {item.opcionesSeleccionadas && item.opcionesSeleccionadas.length > 0 && (
+                            <div className="cart-trio-selected-box">
+                              <span className="cart-trio-label">
+                                <Sparkles size={12} /> Trío elegido:
+                              </span>
+                              <div className="cart-trio-tags">
+                                {item.opcionesSeleccionadas.map((opt, idx) => (
+                                  <span key={idx} className="cart-trio-pill">
+                                    ✓ {opt}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <button
                           type="button"

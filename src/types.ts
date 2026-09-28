@@ -1,8 +1,24 @@
+export interface DishOptionItem {
+  id: string;
+  nombre: string;
+  descripcion?: string;
+  imagen?: string;
+}
+
+export interface DishOptionGroup {
+  titulo: string;
+  subtitulo?: string;
+  min: number;
+  max: number;
+  opciones: DishOptionItem[];
+}
+
 export interface Dish {
   nombre: string;
   precio: string;
   descripcion?: string;
   imagen: string;
+  opcionesConfig?: DishOptionGroup;
 }
 
 export interface Category {
@@ -17,6 +33,7 @@ export interface CartItem {
   dish: Dish;
   cantidad: number;
   nota?: string;
+  opcionesSeleccionadas?: string[];
 }
 
 export type OrderMode = "delivery" | "pickup";

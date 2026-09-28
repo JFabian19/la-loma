@@ -8,6 +8,7 @@ import {
   Phone,
   Plus,
   ShoppingBag,
+  Sparkles,
   Waves,
 } from "lucide-react";
 import { MENU, type Dish } from "./data/menuData";
@@ -42,14 +43,21 @@ export default function App() {
     setIsNoteModalOpen(true);
   };
 
-  const handleConfirmDishNote = (dish: Dish, cantidad: number, nota: string) => {
+  const handleConfirmDishNote = (
+    dish: Dish,
+    cantidad: number,
+    nota: string,
+    opcionesSeleccionadas?: string[]
+  ) => {
     setCart((current) => {
       const cleanNote = nota.trim();
+      const optionsKey = (opcionesSeleccionadas || []).slice().sort().join("|");
       const found = current.find(
         (line) =>
           line.dish.nombre === dish.nombre &&
           line.dish.precio === dish.precio &&
-          (line.nota || "").trim() === cleanNote
+          (line.nota || "").trim() === cleanNote &&
+          ((line.opcionesSeleccionadas || []).slice().sort().join("|")) === optionsKey
       );
 
       if (found) {
@@ -59,10 +67,11 @@ export default function App() {
       }
 
       const newItem: CartItem = {
-        id: `${dish.nombre}-${dish.precio}-${cleanNote}-${Date.now()}`,
+        id: `${dish.nombre}-${dish.precio}-${optionsKey}-${cleanNote}-${Date.now()}`,
         dish,
         cantidad,
         nota: cleanNote,
+        opcionesSeleccionadas,
       };
       return [...current, newItem];
     });
@@ -98,7 +107,7 @@ export default function App() {
       {/* Topbar */}
       <header className="topbar">
         <a href="#inicio" className="brand-lockup" aria-label="Inicio de La Loma">
-          <img src="/logo-la-loma.png" alt="La Loma Cevichería Restobar" />
+          <img src="/logo-la-loma.webp" alt="La Loma Cevichería Restobar" />
           <span>
             <strong>La Loma</strong>
             <small>Cevichería · Restobar</small>
@@ -136,7 +145,7 @@ export default function App() {
         <section id="inicio" className="hero">
           <img
             className="hero-photo"
-            src="/hero-ceviche.jpg"
+            src="/hero-ceviche.webp"
             alt="Ceviche peruano con chicharrón y guarniciones"
           />
           <div className="hero-shade" />
@@ -144,7 +153,7 @@ export default function App() {
             <div className="eyebrow">
               <Waves size={17} /> Tradición marina y sazón amazónica
             </div>
-            <img className="hero-logo" src="/logo-la-loma.png" alt="" aria-hidden="true" />
+            <img className="hero-logo" src="/logo-la-loma.webp" alt="" aria-hidden="true" />
             <h1>
               Fresco del río.<br />
               <em>Sabroso de corazón.</em>
@@ -227,7 +236,19 @@ export default function App() {
               </header>
               <div className="dish-grid">
                 {category.items.map((dish) => (
-                  <article className="dish-card" key={`${category.id}-${dish.nombre}`}>
+                  <article
+                    className={`dish-card ${dish.opcionesConfig ? "dish-card-customizable" : ""}`}
+                    key={`${category.id}-${dish.nombre}`}
+                    onClick={() => handleOpenNoteModal(dish)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleOpenNoteModal(dish);
+                      }
+                    }}
+                  >
                     <div className="dish-photo">
                       <img
                         src={dish.imagen}
@@ -235,6 +256,11 @@ export default function App() {
                         loading="lazy"
                         decoding="async"
                       />
+                      {dish.opcionesConfig && (
+                        <span className="dish-photo-badge">
+                          <Sparkles size={12} /> Elige 3 opciones
+                        </span>
+                      )}
                     </div>
                     <div className="dish-info">
                       <div className="dish-title-row">
@@ -244,11 +270,22 @@ export default function App() {
                       {dish.descripcion && <p>{dish.descripcion}</p>}
                       <button
                         type="button"
-                        className="dish-add-btn"
-                        onClick={() => handleOpenNoteModal(dish)}
-                        aria-label={`Agregar ${dish.nombre} al pedido`}
+                        className={`dish-add-btn ${dish.opcionesConfig ? "dish-add-btn-custom" : ""}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenNoteModal(dish);
+                        }}
+                        aria-label={`${dish.opcionesConfig ? "Armar" : "Agregar"} ${dish.nombre} al pedido`}
                       >
-                        Agregar <Plus size={16} />
+                        {dish.opcionesConfig ? (
+                          <>
+                            Armar trío <Sparkles size={15} />
+                          </>
+                        ) : (
+                          <>
+                            Agregar <Plus size={16} />
+                          </>
+                        )}
                       </button>
                     </div>
                   </article>
@@ -277,7 +314,7 @@ export default function App() {
 
       {/* Footer */}
       <footer>
-        <img src="/logo-la-loma.png" alt="La Loma Cevichería Restobar" />
+        <img src="/logo-la-loma.webp" alt="La Loma Cevichería Restobar" />
         <div>
           <strong>Tradición marina y la mejor sazón</strong>
           <span>Av. Dos de Mayo con 26 de Diciembre, Puerto Maldonado</span>
